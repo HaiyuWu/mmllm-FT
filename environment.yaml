@@ -1,0 +1,16 @@
+name: mmllm-FT
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - vllm==0.7.2
+      - trl
+      - wandb
+      - debugpy
+      - datasets
+      - deepspeed
+      - accelerate
+      - peft
