@@ -12,6 +12,8 @@ strategies to achieve the fine-tuning:
 ```bash
 conda env create -f environment.yaml
 conda activate mmllm-FT
+pip uninstall torch
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
 pip install flash-attn --no-build-isolation
 ```
 
