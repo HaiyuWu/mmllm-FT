@@ -85,9 +85,8 @@ messages.append(
 ```
 That's right, combining a simple < think > token with the [structure reward]() is the way to enable it.
 
-### 💻 Training with multi-GPU 
+## 💻 Fine-tuning with multi-GPUs 
 
 ```shell
-# ds_accel.yaml is the config file for deepspeed zero3
 bash train.sh
 ```
