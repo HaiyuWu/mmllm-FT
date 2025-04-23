@@ -2,7 +2,7 @@ import os
 import wandb
 import argparse
 import torch
-from utils import Utility
+from utils import *
 from trainer import GRPOTrainer
 from accelerate import Accelerator
 from dataloader import DatasetParser
@@ -43,7 +43,7 @@ def train(args):
                                                                 attn_implementation="flash_attention_2")
 
     # Load vLLM with the base model for inference
-    vllm_model, vllm_sampling_params = Utility.load_vLLM(args.model_name,
+    vllm_model, vllm_sampling_params = load_vLLM(args.model_name,
                                                          accel,
                                                          {'temperature': args.temperature,
                                                           'top_p': args.top_p,
@@ -84,9 +84,9 @@ def train(args):
             print(f"- {name}")
 
     # Model preparation
-    Utility.bfloat_model(model)
-    Utility.bfloat_model(ref_model)
-    Utility.freeze_model(ref_model)
+    bfloat_model(model)
+    bfloat_model(ref_model)
+    freeze_model(ref_model)
     model.train()
     ref_model.eval()
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # Wandb
-    parser.add_argument('--wandb', default=False, type=Utility.str2bool)
+    parser.add_argument('--wandb', action="store_true")
     parser.add_argument('--wandb_key', default="", type=str)
     parser.add_argument('--wandb_id', default="", type=str)
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # Fixing Seed
-    Utility.set_all_seeds(42)
+    set_all_seeds(42)
 
     # train
     train(args)

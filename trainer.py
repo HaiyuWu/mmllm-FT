@@ -5,7 +5,7 @@ import wandb
 from tqdm import tqdm
 from abc import ABCMeta, abstractmethod
 import torch.nn as nn
-from utils import Utility
+from utils import *
 
 
 class Trainer(metaclass=ABCMeta):
@@ -149,10 +149,10 @@ class GRPOTrainer(Trainer):
         kld_beta = kwargs["kld_beta"]
 
         # preprocessing for text and image
-        prompt_list, image_list, qa_index_list = Utility.preprocess(inputs, processor)
+        prompt_list, image_list, qa_index_list = preprocess(inputs, processor)
 
         # vLLM generation and merging
-        completion_texts = Utility.vLLM_generation(vllm_model,
+        completion_texts = vLLM_generation(vllm_model,
                                                    vllm_sampling_params,
                                                    max_new_tokens,
                                                    model,
@@ -171,7 +171,7 @@ class GRPOTrainer(Trainer):
         prompt_length = _inputs.input_ids.shape[1]
 
         # postprocessing for text and image
-        new_prompt_list, new_image_list = Utility.postprocess(inputs * num_gens, processor, qa_index_list * num_gens,
+        new_prompt_list, new_image_list = postprocess(inputs * num_gens, processor, qa_index_list * num_gens,
                                                               completion_texts)
         _new_inputs = processor(text=new_prompt_list,
                                 images=new_image_list,
@@ -277,11 +277,11 @@ class GRPOTrainer(Trainer):
     # trial and error here, for better weightage between the reward components ...
     def compute_reward(self, model, sampling_params, temperature, processor, output_texts, answers, accel):
         # Rewards: 0 ~ 2
-        functional_rewards = Utility.functional_reward_fn(model, sampling_params, temperature, processor,
+        functional_rewards = functional_reward_fn(model, sampling_params, temperature, processor,
                                                           output_texts, answers, accel)
 
         # Rewards: -1 ~ 2
-        structural_rewards = Utility.structural_reward_fn(output_texts)
+        structural_rewards = structural_reward_fn(output_texts)
 
         combined_rewards = []
         for f_score, s_score in zip(functional_rewards, structural_rewards): combined_rewards.append(

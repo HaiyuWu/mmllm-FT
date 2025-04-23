@@ -7,4 +7,4 @@ CUDA_VISIBLE_DEVICES=$CUDA_DEVICES \
 accelerate launch --config_file ds_accel.yaml \
 --num_processes=$n_gpu \
 main.py \
---wandb True
+--wandb
